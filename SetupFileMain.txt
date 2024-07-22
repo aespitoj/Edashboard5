@@ -1,0 +1,27 @@
+MERN Project (Mongo, Express, Reactjs, Nodejs)
+
+create folder: node&reactjs/E-dashboard
+
+backend setup(nodejs)
+
+npm init     (just press enter for all the options)
+
+npm i express
+
+npm i mongoose
+
+npm i nodemon
+
+index.js file below:
+const express = require('express');
+
+const app = express();
+
+app.get('/', (req, resp) => {    
+    resp.send('app is working, Hello World')
+});
+
+
+app.listen(5000)
+
+frontend setup(reactjs)
