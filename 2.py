@@ -4,7 +4,7 @@ import os
 # Configuration
 LOCAL_DIR = "D:/tutorial/nodereactedashbd"
 GITHUB_USER = "aespitoj"
-REPO_NAME = "Edashboard"
+REPO_NAME = "Edashboard2"
 
 def run_command(command, cwd=None):
     """Executes a command and prints the output."""
