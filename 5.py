@@ -6,7 +6,7 @@ import os
 # Configuration
 LOCAL_DIR = "D:/tutorial/nodereactedashbd"
 GITHUB_USER = "aespitoj"
-REPO_NAME = "Edashboard4"
+REPO_NAME = "Edashboard5"
 GITHUB_TOKEN = os.getenv("GH_TOKEN")  # Ensure GH_TOKEN is set as an environment variable
 
 def run_command(command, cwd=None):
