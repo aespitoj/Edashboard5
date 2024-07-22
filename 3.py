@@ -1,10 +1,13 @@
 import subprocess
+import requests
+import json
 import os
 
 # Configuration
 LOCAL_DIR = "D:/tutorial/nodereactedashbd"
 GITHUB_USER = "aespitoj"
 REPO_NAME = "Edashboard2"
+GITHUB_TOKEN = os.getenv("GH_TOKEN")  # Make sure to set the GH_TOKEN environment variable
 
 def run_command(command, cwd=None):
     """Executes a command and prints the output."""
@@ -19,6 +22,32 @@ def run_command(command, cwd=None):
         print(f"Output: {e.output}")
         print(f"Error: {e.stderr}")
 
+def create_github_repo():
+    """Creates a new repository on GitHub if it doesn't exist."""
+    url = f"https://api.github.com/user/repos"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    data = {
+        "name": REPO_NAME,
+        "private": False
+    }
+    
+    # Check if repository exists
+    repo_url = f"https://api.github.com/repos/{GITHUB_USER}/{REPO_NAME}"
+    response = requests.get(repo_url, headers=headers)
+    
+    if response.status_code == 404:
+        # Repository does not exist, create it
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        if response.status_code == 201:
+            print(f"Repository '{REPO_NAME}' created successfully.")
+        else:
+            print(f"Failed to create repository: {response.json()}")
+    else:
+        print(f"Repository '{REPO_NAME}' already exists.")
+    
 def init_git_repo():
     """Initializes a Git repository and sets up the remote origin."""
     print("Initializing git repository...")
@@ -29,7 +58,8 @@ def init_git_repo():
     try:
         result = subprocess.run(["git", "remote", "-v"], cwd=LOCAL_DIR, text=True, capture_output=True, check=True)
         if "origin" in result.stdout:
-            print("Remote origin already exists.")
+            print("Remote origin already exists. Updating remote URL...")
+            run_command(["git", "remote", "set-url", "origin", f"https://github.com/{GITHUB_USER}/{REPO_NAME}.git"], cwd=LOCAL_DIR)
         else:
             print("Adding remote origin...")
             run_command(["git", "remote", "add", "origin", f"https://github.com/{GITHUB_USER}/{REPO_NAME}.git"], cwd=LOCAL_DIR)
@@ -59,6 +89,7 @@ def push_to_github():
             run_command(["git", "push", "-u", "origin", "main"], cwd=LOCAL_DIR)
 
 if __name__ == "__main__":
+    create_github_repo()
     init_git_repo()
     add_and_commit_changes()
     push_to_github()
